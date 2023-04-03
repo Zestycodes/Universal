@@ -1,31 +1,15 @@
-get_function = function(func: string)
-    local env = getfenv()
-    if syn then
-        if func == "request" then
-            return syn.request
-        end
-    end
-    if env.request or env.http_request or fluxus and fluxus.request or http and http.request and func == "request" then
-        return(env.request or env.http_request or fluxus and fluxus.request or http and http.request or request)
-    end
-    if func == "hookfunction" then 
-        if env.hookfunction or env.hook_function or hookfunction or hook_function then
-            return(env.hookfunction or env.hook_function or hookfunction or hook_function or function(a,b)
-                a = b
-            end)
-        end
-    end
-end
 local blacklist = {
     "v4.",
     "ident",
     "whatismyip",
     "whatsmyip",
     "ipify",
-    "grabify
+    "grabify"
 }
-local request = get_function("request")
-local hookfunction = get_function("hookfunction")
+
+local request = request or http and http.request or fluxus and fluxus.request or syn and syn.request or http_request
+local hookfunction = hookfunction or hook_function
+local newcclosure = new_cclosure or new_c_closure or newcclosure
 
 -- request hooking;
 do
@@ -38,16 +22,27 @@ do
               return {Body = "_GET REKT_ **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]****[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]****[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]****[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]****[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]**"}
            end
         end
+		return old(table)
    end))
+end
 
 -- httpget hooking;
 do
    local old;
-   hookfunction(game.HttpGetAsync, newcclosure(function(url)
+   hookfunction(game.HttpGetAsync, newcclosure(function(a, b)
         for i, v in pairs(blacklist) do
-           if url:lower():find(v) then
+           if b:lower():find(v) then
               return {Body = "_GET REKT_ **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]****[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]****[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]****[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]****[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]**"}
            end
         end
+		return old(b)
+   end))
+   hookfunction(game.HttpGet, newcclosure(function(a, b)
+        for i, v in pairs(blacklist) do
+           if b:lower():find(v) then
+              return {Body = "_GET REKT_ **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]****[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]****[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]****[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]****[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]** **[IMAGINE IP GRABBING XD]**"}
+           end
+        end
+		return old(b)
    end))
 end
