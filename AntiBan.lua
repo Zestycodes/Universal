@@ -3,10 +3,13 @@ if not game:IsLoaded() then
 end
 
 if setfflag then
-    setfflag("AbuseReportScreenshot", "False")
-    setfflag("AbuseReportScreenshotPercentage", "0")
+    if (not Krnl) then
+        setfflag("AbuseReportScreenshot", "False")
+        setfflag("AbuseReportScreenshotPercentage", "0")
+    end
 end
 
+local ThisShit;
 local LP = game:GetService('Players').LocalPlayer
 local PlayerScripts = LP ~= nil and LP:FindFirstChild('PlayerScripts') or nil
 local ChatScript = PlayerScripts ~= nil and PlayerScripts:FindFirstChild('ChatScript') or nil
@@ -346,7 +349,6 @@ if not PostMessage then
 end
 
 local MessageEvent = Instance.new("BindableEvent")
-local OldFunctionHook
 local old = PostMessage.fire
 
 -- Fixed to work on KRNL
@@ -366,6 +368,7 @@ function PostMessage:fire(Message)
 end
 
 pcall(function()
+	local OldFunctionHook;
 	OldFunctionHook = hookfunction(PostMessage.fire, function(self, Message)
     	if not checkcaller() and self == PostMessage then
         	MessageEvent:Fire(Message)
@@ -379,6 +382,26 @@ ChatFixToggle = false
 task.spawn(function()
     wait(1)
     ACLWarning:Destroy()
+end);
+ThisShit = hookmetamethod(game,"__namecall",function(self,...)
+ local args = {...};
+ local checkargs = {};
+ local method = getnamecallmethod()
+ local last
+ if method == "Fire" or method == "FireServer" then
+     if self.Name == "MessagePosted" or self.Name == "SayMessageRequest"   then
+           last = args[1]
+            if last == args[1] then
+            return ThisShit(self,...)
+              else
+                 return
+                 end
+             if method == "ReportAbuse" and self == game.Players.LocalPlayer then
+                 return
+        end
+     end
+ end  
+ return ThisShit(self,...)
 end)
 if OldSetting then
     StarterGui:SetCoreGuiEnabled(CoreGuiSettings[1], CoreGuiSettings[2])
